@@ -1,9 +1,0 @@
-MongoDB:
-
-
-
-Note:
-
-1. Threshold Distance: 50m
-2. Sort restaurant with respect to time.
-3.
