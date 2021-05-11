@@ -2,11 +2,7 @@
 from __future__ import print_function
 import aerospike
 import sys
-import math
-from aerospike_helpers.operations import list_operations as listops
-import json
-from geopy.geocoders import Nominatim
-# Configure the client
+from aerospike_helpers.operations import map_operations
 
 
 def connect():
@@ -23,14 +19,30 @@ def connect():
     return client
 
 
+def addRestaurant(restaurant, client=None):
+    try:
+        if client is None:
+            client = connect()
+
+        key = ('test', 'bowlhouse', restaurant.get('cell_id'))
+        ret = client.operate(key, [map_operations.map_put("restaurants", restaurant.get('id'), restaurant)])
+        # print(ret)
+        if ret:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(e)
+        return False
+
+
 def updateRestaurant(restaurant, client=None):
     try:
         if client is None:
             client = connect()
 
         key = ('test', 'bowlhouse', restaurant.get('cell_id'))
-        ret = client.operate(key, [listops.list_append("restaurants", restaurant)])
-
+        ret = client.operate(key, [map_operations.map_put("restaurants", restaurant.get('id'), restaurant)])
         if ret:
             return True
         else:
@@ -38,6 +50,22 @@ def updateRestaurant(restaurant, client=None):
     except:
         return False
 
+
+def deleteRestaurant(cell_id, restaurant_id, client=None):
+    try:
+        if client is None:
+            client = connect()
+
+        key = ('test', 'bowlhouse', cell_id)
+        ret = client.operate(key, [map_operations.map_remove_by_key("restaurants", restaurant_id, aerospike.MAP_RETURN_KEY_VALUE)])
+        # print(ret)
+        if ret:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(e)
+        return False
 
 
 
@@ -59,9 +87,10 @@ def main():
         "active": False,
         "created_date": "2021-04-29T11:29:37.376422Z",
         "updated_date": "2021-04-29T11:29:37.376498Z",
-        "cell_id": 'l-0-id-2'
+        "cell_id": 'l-0-id-3'
     }
     print(addRestaurant(restaurant))
+    print(deleteRestaurant(restaurant.get('cell_id'), restaurant.get('id')))
 
 
 if __name__ == '__main__':

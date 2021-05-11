@@ -3,6 +3,7 @@
 from __future__ import print_function
 import aerospike
 from aerospike_helpers.operations import list_operations as listops
+from aerospike_helpers.operations import map_operations
 import json
 from geopy.geocoders import Nominatim
 # Configure the client
@@ -45,7 +46,7 @@ def upload(key,  val):
           'coordinates': val['center']
       })
 
-      # val['inside'] = None
+      val['restaurants'] = {}
       client.put(key, val)
     except Exception as e:
       import sys
@@ -91,7 +92,7 @@ def update(client, key, value):
                 "profile_pic": "http://2bofficedubai.ddns.net:8000/media/restaurants/images/burger_king.jpeg",
                 "name": "Burger King",
                 "address": "Krish Gethin",
-                "contact_person": "Krish",
+                "contact_person": "Dilkhush",
                 "mobile": "9878916296",
                 "email": "k@gmail.com",
                 "latitude": 43.6574989,
@@ -104,7 +105,8 @@ def update(client, key, value):
                 "created_date": "2021-04-29T11:29:37.376422Z",
                 "updated_date": "2021-04-29T11:29:37.376498Z"
             }
-    ret = client.operate(key, [listops.list_append("restaurants", restaurant)])
+    ret = client.operate(key, [map_operations.map_put("restaurants",restaurant.get('id'), restaurant)])
+    print('ret', ret)
     key1, metadata, bins = client.get(key)
     print(key1)
     print(metadata)
@@ -119,8 +121,8 @@ def main():
     for i in data:
         upload(i.get('id'), i)
 
-main()
+# main()
 # query_circle(client)
-# update(client, 'l-0-id-0', '')
+update(client, 'l-0-id-0', '')
 # Close the connection to the Aerospike cluster
 client.close()

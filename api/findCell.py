@@ -1,12 +1,9 @@
-
 # import the module
 from __future__ import print_function
 import aerospike
 import sys
 import math
-from aerospike_helpers.operations import list_operations as listops
-import json
-from geopy.geocoders import Nominatim
+
 # Configure the client
 
 

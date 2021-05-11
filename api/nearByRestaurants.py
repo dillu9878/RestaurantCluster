@@ -2,7 +2,7 @@
 from __future__ import print_function
 import aerospike
 import sys
-import findDistance
+from restaurant_cluster.api import findDistance
 
 # Configure the client
 
@@ -37,7 +37,17 @@ def change_format(cell):
     except:
         return cell
 
-def findRestaurants(cell, page=1, client=None, range=2000):
+
+def get_restaurant(data, start, end):
+    res = []
+    for i in data[start:end+1]:
+        res.append(i[1])
+    return res
+
+
+def findRestaurants(cell, page=None, client=None, range=2000):
+    if page is None:
+        page = 1
     data = []
     cell = change_format(cell)
     point = cell.get('center')
@@ -57,11 +67,13 @@ def findRestaurants(cell, page=1, client=None, range=2000):
         # dis = {'duration': 30, 'distance': 5}  # findDistanceAPI
         if value.get('restaurants'):
             dis = findDistance.findDistance(change_format(value), change_format(cell))  # findDistanceAPI
-        for restaurant in value.get('restaurants'):
-            restaurant['duration'] = dis.get('duration')
+        for id, restaurant in value.get('restaurants').items():
+            dur = dis.get('duration')
+            restaurant['duration'] = dur
             restaurant['distance'] = dis.get('distance')
-            data.append(restaurant)
-
+            k = int(dur.split()[0])
+            data.append((k, restaurant))
+    data = sorted(data, key=lambda x:x[0] )
     total_count = len(data)
     page_max = total_count//10
     if total_count%10 != 0:
@@ -69,17 +81,22 @@ def findRestaurants(cell, page=1, client=None, range=2000):
     if page <= page_max:
         start = (page-1)*10
         end = start + 10
-        data = data[start:end+1]
+        data = get_restaurant(data, start, end)
     else:
         data = []
 
-    return data
+    res = {
+        'count': total_count,
+        'restaurant': data
+    }
+
+    return res
 
 
 def main():
     cell = {
         'id': 'l-0-id-1',
-        'center': [25.240,55.3], # [lat, lng]
+        'center': [25.2393563,55.3085524], # [lat, lng]
     }
     print(findRestaurants(cell=cell, page=1))
 
