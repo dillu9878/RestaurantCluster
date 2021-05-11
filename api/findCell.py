@@ -86,8 +86,8 @@ def findCell(point, client=None, range=51):
 
 def main():
     point = {
-        'lat': 55.3,
-        'lng': 25.240
+        'lat': 25.240,
+        'lng': 55.3,
     }
     print(findCell(point))
 

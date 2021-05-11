@@ -39,6 +39,7 @@ def change_format(cell):
 
 def findRestaurants(cell, page=1, client=None, range=2000):
     data = []
+    cell = change_format(cell)
     point = cell.get('center')
     if client is None:
         client = connect()
@@ -78,7 +79,7 @@ def findRestaurants(cell, page=1, client=None, range=2000):
 def main():
     cell = {
         'id': 'l-0-id-1',
-        'center': [55.3, 25.240],
+        'center': [25.240,55.3], # [lat, lng]
     }
     print(findRestaurants(cell=cell, page=1))
 

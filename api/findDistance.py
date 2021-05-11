@@ -45,10 +45,11 @@ def findDistance(origin_cell, destination_cell, client = None):
         client = connect()
     origin_cell_id = origin_cell.get('id')
     destination_cell_id = destination_cell.get('id')
-    origin_cell_center = origin_cell.get('center')[::-1] # converting [lng, lat] -->> [lat, lng]
-    destination_cell_center = destination_cell.get('center')[::-1]
-    key_hash = hash((origin_cell_id, destination_cell_id))
-    key = ('test', 'bowlhouse', key_hash)
+    origin_cell_center = origin_cell.get('center')
+    destination_cell_center = destination_cell.get('center')
+    # key_hash = hash((origin_cell_id, destination_cell_id))
+    # print(key_hash)
+    key = ('test', 'bowlhouse_distance', origin_cell_id +','+destination_cell_id)
     key, metadata = client.exists(key)
     if metadata is None:
         data = getDistance(origin_cell_center, destination_cell_center)
@@ -61,11 +62,11 @@ def findDistance(origin_cell, destination_cell, client = None):
 def main():
     origin_cell = {
         'id': 'l-0-id-0',
-        'center': [55.31232824462227, 25.240075265448, ]
+        'center': [25.240075265448,55.31232824462227] # [lat, lng]
     }
     destination_cell = {
         'id': 'l-0-id-1',
-        'center': [55.29641624334061, 25.25018152947311]
+        'center': [25.25018152947311, 55.29641624334061] # [lat, lng]
     }
     print(findDistance(origin_cell, destination_cell))
 

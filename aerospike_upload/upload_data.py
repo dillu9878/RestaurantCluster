@@ -119,8 +119,8 @@ def main():
     for i in data:
         upload(i.get('id'), i)
 
-# main()
-query_circle(client)
+main()
+# query_circle(client)
 # update(client, 'l-0-id-0', '')
 # Close the connection to the Aerospike cluster
 client.close()
