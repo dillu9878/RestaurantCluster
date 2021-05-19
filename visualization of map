@@ -1,0 +1,15 @@
+import folium 
+m=folium.Map(location=[30.341391,76.401840], zoom_start=15)
+m
+folium.Marker(location=[30.741482,76.768066],popup="chandigarh",).add_to(m) #to create popup
+m
+folium.Marker(location=[30.340000, 76.379997],popup="Patiala",icon=folium.Icon(color="green")).add_to(m) #assign colour to the popup
+m
+folium.Circle(                              #to create circle of desire radius
+    radius=500,
+    location=[30.340000, 76.379997],
+    popup="Patiala",
+    color="crimson",
+    fill=False,
+).add_to(m)
+m
